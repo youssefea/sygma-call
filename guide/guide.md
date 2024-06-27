@@ -118,6 +118,8 @@ Run the script with the following command:
 forge script script/Counter.s.sol:CounterScript --rpc-url $CHAIN_RPC_URL --broadcast
 ```
 
+In our case we deploy one contract on each network (`Sepolia` and `Holesky`) to this address: `0x303e46f108ed47bf5a489cf62926fd3d8ddcc72a`.
+
 **Note:** The `CHAIN_RPC_URL` is the URL of the chain you would like to send the initial message of deployment. This will be relayed to other chains for deploying the contracts.
 
 ### Environment Variables
