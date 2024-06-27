@@ -3,10 +3,19 @@
 ## Prerequisites
 
 * Install [Foundry](https://github.com/foundry-rs/foundry)
-* Node.js and npm installed on your machine
+* Node.js installed on your machine
 * Basic understanding of Solidity and Ethereum development
 
 ## Step 1: Deploying the contracts
+
+The goal of this step is to ensure the following:
+- Deploying the same contract to multiple EVM-compatible chains in an easy and efficient manner.
+- Make sure that the deployed contracts have the same address.
+
+> **Note**
+>
+> The EVM address attribution is deterministic. Our way to get it to dpeloy to the same address is by setting up relayer contracts and adjusting the deployment nonce accordingly, in order to get deterministic addresses.
+
 
 ### Install Foundry
 
@@ -45,7 +54,7 @@ forge install chainsafe/foundry-multichain-deploy
 
 ### Example Contract: `Counter.sol`
 
-Foundry comes with a `Counter.sol` example. Create the contract in the `src` directory.
+Foundry comes with a `Counter.sol` example. If not, create the contract in the `src` directory.
 
 ```solidity
 // SPDX-License-Identifier: UNLICENSED
@@ -134,15 +143,23 @@ Refer to the Foundry book for details on how to verify contracts on explorers.
 
 ## Step 2: Interacting with Deployed Contracts Using Sygma SDK
 
+The goal of this step is to achieve the following:
+- Create a transaction on chain A (Sepolia) which will be relayed on chain B (Holesky)
+- Make sure that the transaction does what is intended from it to do. In this case, it is incrementing the number
+
 ### Prerequisites
 
-* Node.js and npm installed on your machine
+* Node.js installed on your machine
 * Navigate to `evm-to-evm-generic-mesage-passing` to a different repository or to a folder in your same repo
 * Install the dependencies through the following command:
 
 ```bash
 yarn install
 ```
+> **Note**
+>
+> Make sure to dependency management. It is usually recommended to keep a `yarn.lock` file for your code to stay functional over time.
+
 ### Environment Variables
 
 Create a `.env` file in the same directory and add the following content:
@@ -155,13 +172,13 @@ HOLESKY_RPC_URL=https://holesky.drpc.org
 
 Replace `your_private_key` with your actual private key.
 
-### Setting Up the Node.js Script
+### Checking the code
 
 Navigate to `/src` where you will find the file `transfer.ts` and `abi.ts`.
-- `transfer.ts` is where you will find the server code using General Message Passing
-- `abi.ts` is the ABI of the contract that we deployed earlier
+- `transfer.ts` is where you will find the server code using General Message Passing in order to send a cross-chain transaction
+- `abi.ts` is the ABI of the contract that we deployed earlier `Counter.sol`
 
-During the deployment process, we set the initial value of the `Counter` contract to 104. This was done in the deployment script (`Counter.s.sol`) with the following line:
+During the deployment process, we set the initial value of the `number` contract to 104. This was done in the deployment script (`Counter.s.sol`) with the following line:
 
 ```solidity
 bytes memory initData = abi.encodeWithSignature("setNumber(uint256)", uint256(104));
@@ -287,7 +304,7 @@ Status of the transfer pending
 Status of the transfer pending
 Status of the transfer executed
 ```
-
+You can see the transaction details on the [Sygma Explorer](https://scan.test.buildwithsygma.com/transfer/0x251be7fcb2ee9f3041e15ca9871b22db78755af02936d08df566fd84b4765a8e).
 
 ### Debugging
 
@@ -297,7 +314,3 @@ If you encounter any issues, make sure to:
 * Verify the contract addresses and function signatures.
 * Ensure the ABI of the contract is correct and matches the deployed contract.
 * Use the [Sygma scanner](https://scan.test.buildwithsygma.com/) in order to monitor your transactions
-
-## Conclusion
-
-This guide walked you through deploying a contract on multiple networks using Foundry and interacting with the deployed contracts using the Sygma SDK. You now have a setup to deploy and interact with smart contracts across different Ethereum testnets. Happy coding!
